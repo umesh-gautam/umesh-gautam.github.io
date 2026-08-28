@@ -1,8 +1,5 @@
-# Umesh Gautam Academic Website
+# Umesh Gautam Academic Website — v6
 
-Academic website prepared for GitHub Pages.
+This version uses the August 27 CV and includes the full CV structure on the public site: Education, Research Experience, Research, Teaching Experience, Technical Skills, Conference Presentations, Honors & Awards, Professional Service, Volunteer Service, References, and Contact.
 
-## Current layout
-Home → Education → Research → Teaching → Presentations → Contact
-
-The former About / Training & Approach section has been removed. Education is now placed near the top of the site, before Research. The bundled CV is the August 27, 2026 version supplied by Umesh Gautam.
+To update GitHub Pages, upload the contents of this folder to the existing `umesh-gautam.github.io` repository and commit the changes.
