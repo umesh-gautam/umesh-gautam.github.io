@@ -1,4 +1,4 @@
-# Umesh Gautam Academic Website — v6
+# Umesh Gautam Academic Website — v7
 
 This version uses the August 27 CV and includes the full CV structure on the public site: Education, Research Experience, Research, Teaching Experience, Technical Skills, Conference Presentations, Honors & Awards, Professional Service, Volunteer Service, References, and Contact.
 
