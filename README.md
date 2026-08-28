@@ -12,3 +12,6 @@ To update GitHub Pages, upload the contents of this folder to the existing `umes
 - Empirical methods simplified to a compact text line.
 - Repeated expected-completion line removed from the profile card because it already appears in Education.
 - Overall vertical section spacing reduced for a more consistent page rhythm.
+
+
+Version 13: corrected publication pages for the JARE article to 537-553 and updated the bundled CV accordingly.
