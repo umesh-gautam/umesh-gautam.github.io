@@ -120,7 +120,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .education-row h3 { margin: 0 0 2px; font-family: Georgia, serif; font-size: 1.02rem; letter-spacing: -.012em; }
 .education-row p { margin: 0; color: var(--muted); font-size: .86rem; }
 .education-date { color: var(--accent); font-size: .78rem; font-weight: 800; white-space: nowrap; }
-.education-primary h3 { color: var(--accent); }
+.education-primary h3 { color: var(--ink); }
 
  .experience-card { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 19px 0; }
 .experience-meta { display: flex; justify-content: space-between; gap: 24px; align-items: baseline; font-size: .9rem; }
@@ -163,7 +163,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .timeline { border-top: 1px solid #d2cec2; }
  .timeline-item { display: grid; grid-template-columns: 145px 1fr; gap: 18px; padding: 16px 0; border-bottom: 1px solid #d2cec2; }
 .timeline-date { color: var(--accent); font-weight: 800; font-size: .8rem; }
-.timeline-date span { color: #777d85; font-weight: 500; }
+.timeline-date span { color: var(--accent); font-weight: 800; }
  .timeline h3 { margin: 0 0 4px; font-family: Georgia, serif; font-size: .98rem; }
 .timeline p { margin: 0; color: #5b626c; font-size: .87rem; }
 
