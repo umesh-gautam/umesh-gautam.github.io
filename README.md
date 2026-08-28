@@ -1,17 +1,7 @@
-# Umesh Gautam Academic Website — v8
+# Umesh Gautam Academic Website v14
 
-This version uses the August 27 CV and includes the full CV structure on the public site: Education, Research Experience, Research, Teaching Experience, Technical Skills, Conference Presentations, Honors & Awards, Professional Service, Volunteer Service, References, and Contact.
+This update removes **Why Is Healthcare So Expensive in the U.S.?** from the website and replaces it with the pharmaceutical mergers project.
 
-To update GitHub Pages, upload the contents of this folder to the existing `umesh-gautam.github.io` repository and commit the changes.
+The CV file is intentionally NOT included in this update so that the already-correct latest CV on the live GitHub repository is not overwritten.
 
-
-## v9 changes
-- Research-fields sentence moved to the beginning of the homepage introduction.
-- First-screen spacing tightened substantially.
-- Research fields retained as the primary profile element.
-- Empirical methods simplified to a compact text line.
-- Repeated expected-completion line removed from the profile card because it already appears in Education.
-- Overall vertical section spacing reduced for a more consistent page rhythm.
-
-
-Version 13: corrected publication pages for the JARE article to 537-553 and updated the bundled CV accordingly.
+For the safest update, upload `index.html` only to the existing GitHub Pages repository and commit the change.
