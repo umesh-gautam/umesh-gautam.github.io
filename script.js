@@ -26,7 +26,7 @@ document.querySelectorAll('.abstract-toggle').forEach((button) => {
     const nowOpen = panel.hasAttribute('hidden');
     panel.toggleAttribute('hidden');
     button.setAttribute('aria-expanded', String(nowOpen));
-    button.textContent = nowOpen ? 'Hide details' : button.dataset.closedLabel;
+    button.textContent = nowOpen ? 'Hide abstract' : button.dataset.closedLabel;
   });
 });
 
