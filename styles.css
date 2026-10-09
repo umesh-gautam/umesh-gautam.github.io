@@ -150,6 +150,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
  .paper-content h4 { margin: 0 0 5px; font-family: Georgia, serif; font-size: .99rem; line-height: 1.32; }
 .paper-content p { margin-top: 6px; font-size: .88rem; }
 .journal { color: #4e5663; }
+.paper-content .paper-summary { margin: 5px 0 8px; font-size: .86rem; line-height: 1.5; color: #58606b; }
+.paper-content .paper-summary + .paper-links { margin-top: 3px; }
+
 .muted { color: var(--muted); }
  .project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 .project-card { display: flex; flex-direction: column; background: #f3f2ed; border: 1px solid #ddd9ce; border-radius: 11px; padding: 17px; }
