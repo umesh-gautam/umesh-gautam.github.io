@@ -484,3 +484,71 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 980px) {
   .hero-copy .role { white-space: normal; }
 }
+
+/* v13: Research introduction and areas are arranged with the portrait
+   in a balanced two-column academic profile. */
+.hero {
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: clamp(26px, 3.4vw, 48px);
+  align-items: start;
+  padding-bottom: 12px;
+}
+.hero-copy { min-width: 0; }
+.hero-copy .hero-intro {
+  max-width: 790px;
+  font-size: .87rem;
+  line-height: 1.56;
+}
+.hero-photo {
+  width: 100%;
+  border-radius: 11px;
+}
+.hero-photo .portrait {
+  aspect-ratio: 4 / 5;
+}
+.hero-photo .portrait img {
+  object-position: 50% 41%;
+}
+.hero-expertise {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 30px;
+  row-gap: 14px;
+  max-width: 800px;
+  margin-top: 21px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+}
+.expertise-group { min-width: 0; }
+.expertise-label {
+  margin: 0 0 7px;
+  color: var(--accent);
+  font-size: .65rem;
+  font-weight: 780;
+  letter-spacing: .09em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+.expertise-text {
+  margin: 0;
+  color: #344052;
+  font-size: .79rem;
+  line-height: 1.65;
+  font-weight: 530;
+}
+.hero + #education { padding-top: 19px; }
+@media (min-width: 740px) and (max-width: 980px) {
+  .hero { grid-template-columns: minmax(0, 1fr) 215px; gap: 24px; }
+  .hero-photo { max-width: none; }
+  .hero-copy .role { white-space: normal; }
+  .hero-expertise { column-gap: 16px; }
+}
+@media (max-width: 739px) {
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 19px; }
+  .hero-photo { width: 100%; max-width: 310px; }
+  .hero-expertise { gap: 16px; }
+}
+@media (max-width: 480px) {
+  .hero-expertise { grid-template-columns: 1fr; gap: 15px; }
+  .hero-copy .role { white-space: normal; }
+}
