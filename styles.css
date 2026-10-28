@@ -191,7 +191,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .compact-list .activity-row { grid-template-columns: 100px 1fr; padding: 16px 0; }
 .compact-list .activity-row h4 { font-size: .94rem; }
 
-.reference-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.reference-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
  .reference-grid article { border-top: 2px solid var(--accent); background: rgba(255,255,255,.56); padding: 15px 14px; }
 .reference-grid h3 { margin: 0 0 5px; font-family: Georgia, serif; font-size: 1rem; }
 .reference-grid p { margin: 0 0 8px; color: var(--muted); font-size: .78rem; }
