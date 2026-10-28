@@ -382,3 +382,77 @@ button, a { -webkit-tap-highlight-color: transparent; }
 #research-experience .section-heading h2 { margin-bottom: 0; }
 #service .service-column > h3 { margin-top: 2px; }
 #contact.contact-section h2 { margin: 0 0 8px; }
+
+/* v11: balanced academic homepage profile.
+   Use one typographic system for research fields and methods. */
+.hero {
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+.hero-copy { padding-top: 0; }
+.hero h1 {
+  margin-bottom: 4px;
+  letter-spacing: -.035em;
+}
+.hero-card {
+  box-shadow: 0 5px 18px rgba(17, 24, 39, .045);
+}
+.hero-card .portrait { aspect-ratio: 1.82; }
+.hero-card-body { padding: 12px 14px 14px; }
+.hero-card .mini-label {
+  font-size: .65rem;
+  font-weight: 760;
+  letter-spacing: .1em;
+  margin-bottom: 7px;
+}
+.hero-card .tag-list,
+.hero-card .profile-method-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 9px;
+  row-gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-card .tag-list li,
+.hero-card .profile-method-list li {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 28px;
+  margin: 0;
+  padding: 2px 3px 2px 8px;
+  border: 0;
+  border-left: 2px solid var(--accent);
+  border-radius: 0;
+  background: transparent;
+  color: #25303c;
+  font-family: inherit;
+  font-size: .72rem;
+  font-weight: 650;
+  line-height: 1.28;
+  letter-spacing: 0;
+}
+.hero-card .profile-methods {
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px solid #e5e1d9;
+}
+.hero + #education {
+  padding-top: 19px;
+}
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding-bottom: 18px;
+  }
+  .hero + #education { padding-top: 23px; }
+}
+@media (max-width: 680px) {
+  .hero { padding-top: 23px; }
+  .hero-card { width: 100%; max-width: 360px; }
+  .hero-card .tag-list li,
+  .hero-card .profile-method-list li { font-size: .74rem; }
+}
