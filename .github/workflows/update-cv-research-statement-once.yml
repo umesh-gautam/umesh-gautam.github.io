@@ -1,0 +1,111 @@
+name: Update academic CV research statement once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-cv-research-statement-once.yml'
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install font and PDF tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-liberation
+          python -m pip install pymupdf
+      - name: Update hosted CV while preserving sections and pages
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          src=Path("assets/Umesh_Gautam_CV.pdf")
+          out=Path("assets/_cv_research_statement_temp.pdf")
+          source=fitz.open(src)
+          assert len(source)==3
+          old=source[0].get_text()
+          assert "International Trade | Industrial Organization | Production Economics | Labor Economics" in old
+          assert "welfare across forms of market" in old and "welfare responses" not in old
+          result=fitz.open()
+          page=result.new_page(width=612,height=792)
+          page.draw_rect(page.rect,fill=(1,1,1),color=None,overlay=False)
+          for a,b in [(0,289.6),(744,792)]:
+              clip=fitz.Rect(0,a,612,b)
+              page.show_pdf_page(clip,source,0,clip=clip,keep_proportion=False,overlay=True)
+          fonts={
+              "LiberationSerif":"/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf",
+              "LiberationSerif-Bold":"/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
+              "LiberationSerif-Italic":"/usr/share/fonts/truetype/liberation/LiberationSerif-Italic.ttf",
+          }
+          for name,filename in fonts.items():
+              page.insert_font(fontname="My"+name.replace("-",""),fontfile=filename)
+          summary=("I develop structural models and employ advanced econometrics, calibration, and causal inference "
+                   "to examine how policies affect trade, production, prices, employment, wages, and welfare "
+                   "across different market structures.")
+          font=fitz.Font(fontfile=fonts["LiberationSerif"])
+          lines=[];line=""
+          for word in summary.split():
+              t=(line+" "+word).strip()
+              if font.text_length(t,fontsize=11)>512:
+                  lines.append(line);line=word
+              else:line=t
+          if line:lines.append(line)
+          assert len(lines)==2,lines
+          for i,l in enumerate(lines):
+              page.insert_text((48.3,302.2+15.2*i),l,fontsize=11,fontname="MyLiberationSerif",color=(0.22,0.25,0.3),overlay=True)
+          def shift(y):
+              if 297<=y<326:return 35
+              if 326<=y<352:return 31
+              if 352<=y<407:return 29
+              if 407<=y<464:return 26
+              if 464<=y<505:return 23
+              if 505<=y<531:return 21
+              if 531<=y<559:return 17
+              if 559<=y<599:return 15
+              if 599<=y<689:return 13
+              if 689<=y<738:return 11
+              return None
+          def fontname(name):
+              if name=="Times-Roman":return "MyLiberationSerif"
+              if name in fonts:return "My"+name.replace("-","")
+              raise ValueError("Unexpected font "+name)
+          for block in source[0].get_text("dict")["blocks"]:
+              if block["type"]!=0:continue
+              for line in block["lines"]:
+                  for span in line["spans"]:
+                      dy=shift(span["bbox"][1])
+                      if dy is None:continue
+                      origin=span["origin"];c=span["color"]
+                      rgb=(((c>>16)&255)/255.0,((c>>8)&255)/255.0,(c&255)/255.0)
+                      page.insert_text((origin[0],origin[1]+dy),span["text"],fontsize=span["size"],fontname=fontname(span["font"]),color=rgb,overlay=True)
+          for drawing in source[0].get_drawings():
+              r=drawing["rect"];y=r.y0
+              if drawing["type"]!="s" or abs(r.y1-r.y0)>0.2 or r.x1-r.x0<400:continue
+              dy=shift(y-2)
+              if dy is not None:
+                  page.draw_line((r.x0,y+dy),(r.x1,y+dy),color=drawing["color"],width=drawing["width"],overlay=True)
+          result.insert_pdf(source,from_page=1,to_page=2,links=True,annots=True)
+          result.set_metadata(source.metadata)
+          result.save(out,garbage=4,deflate=True)
+          result.close();source.close()
+          check=fitz.open(out)
+          alltext="\n".join(p.get_text() for p in check)
+          assert len(check)==3
+          assert "I develop structural models and employ advanced econometrics" in alltext
+          assert "welfare across forms of market" in alltext
+          assert "Dr. Stephen Devadoss" in alltext
+          check.close()
+          out.replace(src)
+          
+          PY
+      - name: Commit CV and remove one-time workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/update-cv-research-statement-once.yml
+          git add -A assets/Umesh_Gautam_CV.pdf .github/workflows/update-cv-research-statement-once.yml
+          git commit -m "Add research methods summary beneath CV research fields"
+          git push
