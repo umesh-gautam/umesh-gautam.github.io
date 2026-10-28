@@ -331,6 +331,42 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .tag-list { grid-template-columns: 1fr 1fr; }
 }
 
+/* Research methods: compact, readable tags alongside the introduction. */
+.hero-methods {
+  margin-top: 16px;
+  max-width: 780px;
+}
+.hero-methods .mini-label {
+  margin-bottom: 8px;
+}
+.hero-method-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.hero-method-list li {
+  padding: 6px 10px;
+  border: 1px solid #dedbd3;
+  background: #faf9f6;
+  border-radius: 6px;
+  color: #38414d;
+  font-size: .73rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.hero-methods + .hero-actions {
+  margin-top: 18px;
+}
+@media (max-width: 680px) {
+  .hero-methods { margin-top: 14px; }
+  .hero-method-list { gap: 6px; }
+  .hero-method-list li { padding: 5px 8px; font-size: .7rem; }
+}
+
 /* v10: cleaner single-title hierarchy in lower sections */
 #teaching .section-heading, #presentations .section-heading, #awards .section-heading,
 #service .section-heading, #references .section-heading, #skills .section-heading,
