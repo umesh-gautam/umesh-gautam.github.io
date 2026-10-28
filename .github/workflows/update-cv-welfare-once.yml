@@ -1,0 +1,55 @@
+name: CV welfare wording correction
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-cv-welfare-once.yml'
+permissions:
+  contents: write
+jobs:
+  edit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -m pip install pymupdf
+      - name: Update CV PDF
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          p = Path("assets/Umesh_Gautam_CV.pdf")
+          doc = fitz.open(p)
+          assert len(doc)==3, "Unexpected page count"
+          page = doc[0]
+          old = page.get_text()
+          assert "counterfactual predicts substantial differences in trade reallocation and welfare responses across forms" in old, "Unexpected PDF content"
+          page.add_redact_annot(fitz.Rect(63, 602.8, 568, 684.3), fill=(1,1,1))
+          page.apply_redactions(images=0,graphics=0,text=0)
+          lines=[
+           "Global tree-nut trade is modeled using structural gravity with endogenous markups and a representative",
+           "multiproduct firm in each exporting country. Perfect, monopolistic, Bertrand, and Cournot competition",
+           "are evaluated against observed trade shares, with Cournot providing the best fit. A free-trade",
+           "counterfactual predicts substantial differences in trade reallocation and welfare across forms of market",
+           "conduct. Results remain robust when allowing more symmetric firms per exporting country."
+          ]
+          font=fitz.Font(fontname="Times-Roman")
+          for i,line in enumerate(lines):
+           assert font.text_length(line,fontsize=12)<505
+           page.insert_text((64.9,615.6+15.7*i),line,fontname="Times-Roman",fontsize=12,color=(31/255,31/255,31/255))
+          doc.saveIncr()
+          doc.close()
+          check=fitz.open(p)
+          new=check[0].get_text()
+          assert "welfare responses" not in new
+          assert "welfare across forms of market" in new
+          check.close()
+          PY
+      - name: Commit updated PDF and remove one-time workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/update-cv-welfare-once.yml
+          git add -A assets/Umesh_Gautam_CV.pdf .github/workflows/update-cv-welfare-once.yml
+          git commit -m "Remove responses after welfare in CV"
+          git push
