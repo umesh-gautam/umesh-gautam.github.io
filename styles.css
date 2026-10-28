@@ -456,3 +456,31 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .hero-card .tag-list li,
   .hero-card .profile-method-list li { font-size: .74rem; }
 }
+
+/* v12: simplified academic profile; no decorative lines or cramped columns. */
+.hero-copy .role {
+  white-space: nowrap;
+}
+.hero-card .profile-section {
+  margin: 0;
+}
+.hero-card .profile-terms {
+  margin: 0;
+  color: #344052;
+  font-size: .78rem;
+  line-height: 1.65;
+  font-weight: 550;
+  overflow-wrap: normal;
+}
+.hero-card .profile-fields .mini-label,
+.hero-card .profile-methods .mini-label {
+  margin-bottom: 5px;
+}
+.hero-card .profile-methods {
+  margin-top: 14px;
+  padding-top: 0;
+  border-top: 0;
+}
+@media (max-width: 980px) {
+  .hero-copy .role { white-space: normal; }
+}
