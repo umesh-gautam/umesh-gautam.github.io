@@ -21,12 +21,12 @@ jobs:
           import os,time,json,urllib.parse,urllib.request
           model=os.environ["MODEL"]
           variables="temperature_2m_min,temperature_2m_max,et0_fao_evapotranspiration" if model=="era5_land" else "precipitation_sum"
-          d=dict(latitude="39.666929",longitude="-121.600672",start_date="1991-01-01",end_date="1995-12-31",daily=variables,models=model,timezone="America/Los_Angeles")
+          d=dict(latitude="39.666929",longitude="-121.600672",start_date="1991-01-01",end_date="2019-12-31",daily=variables,models=model,timezone="America/Los_Angeles")
           url="https://archive-api.open-meteo.com/v1/archive?"+urllib.parse.urlencode(d)
           t=time.monotonic()
           with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"AcademicWeatherResearch/1.0"}),timeout=75) as r:
              blob=r.read()
           j=json.loads(blob); days=j.get("daily",{}).get("time",[])
           print("RESULT",json.dumps({"model":model,"seconds":round(time.monotonic()-t,2),"bytes":len(blob),"days":len(days),"keys":list(j.get("daily",{})),"error":j.get("reason","")}))
-          assert len(days)==1826
+          assert len(days)==10592
           PY
