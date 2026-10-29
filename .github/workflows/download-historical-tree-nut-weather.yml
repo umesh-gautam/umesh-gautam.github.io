@@ -1,0 +1,30 @@
+name: Download historical tree-nut orchard centroid weather 1991-2019
+on:
+  push:
+    branches: [research-weather-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  weather:
+    strategy:
+      fail-fast: false
+      matrix:
+        country: [USA, TUR]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python compilation and download
+        shell: bash
+        run: |
+          python -m py_compile weather_research/download_real_daily.py
+          python weather_research/download_real_daily.py "${{ matrix.country }}"
+      - name: Upload measured weather and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: measured-weather-${{ matrix.country }}
+          path: weather_output/
+          if-no-files-found: warn
+          retention-days: 30
