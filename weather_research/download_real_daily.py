@@ -11,7 +11,8 @@ from datetime import date, timedelta, datetime, timezone
 ROOT=Path("weather_research")
 ROOT.mkdir(exist_ok=True)
 TARGET=sys.argv[1] if len(sys.argv)>1 else "USA"
-OUT=Path("weather_output")/TARGET
+PART=int(os.environ.get("WEATHER_PART","0")); NPARTS=int(os.environ.get("WEATHER_PARTS","1"))
+OUT=Path("weather_output")/TARGET/("part_"+str(PART))
 (OUT/"raw_regions").mkdir(parents=True,exist_ok=True)
 BASE="https://archive-api.open-meteo.com/v1/archive"
 CONFIG={
@@ -66,7 +67,7 @@ def real(x):
 def getvalue(dic,key,index):
     a=dic.get(key,[])
     return real(a[index]) if index<len(a) else None
-sites=[r for r in read_rows(ROOT/"pre2010_region_sites.csv") if r["country_iso3"]==TARGET]
+sites=[r for i,r in enumerate([x for x in read_rows(ROOT/"pre2010_region_sites.csv") if x["country_iso3"]==TARGET]) if i%NPARTS==PART]
 log=[];metrics=[];all_complete=0;total_daily=0
 for pos,s in enumerate(sites,1):
     region=s["region"];lat=float(s["latitude"]);lon=float(s["longitude"])
