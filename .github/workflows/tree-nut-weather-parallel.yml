@@ -1,0 +1,34 @@
+name: Parallel verified tree-nut historical weather retrieval
+on:
+  push:
+    branches: [research-weather-fastpath-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measured_weather:
+    strategy:
+      fail-fast: false
+      matrix:
+        country: [USA, TUR]
+        part: [0, 1, 2, 3]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      WEATHER_PART: "${{ matrix.part }}"
+      WEATHER_PARTS: "4"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve and validate daily historical weather
+        shell: bash
+        run: |
+          python -m py_compile weather_research/download_real_daily.py
+          python weather_research/download_real_daily.py "${{ matrix.country }}"
+      - name: Upload only observed data with request logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: measured-${{ matrix.country }}-part-${{ matrix.part }}
+          path: weather_output/
+          if-no-files-found: warn
+          retention-days: 30
