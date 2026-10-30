@@ -1,0 +1,9 @@
+province,site_proxy,latitude,longitude,reported_2006_walnut_tonnes,reported_china_2006_walnuts_tonnes,weight_2006,source_url,limitation
+Sichuan,Chengdu,30.657,104.066,61112,475455,0.12853372033105132,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Xinjiang,Kashgar,39.47,75.99,38158,475455,0.08025575501361853,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Henan,Zhengzhou,34.746,113.625,28889,475455,0.0607607449706071,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Shandong,Jinan,36.651,117.12,28618,475455,0.06019076463598027,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Liaoning,Shenyang,41.805,123.431,17604,475455,0.03702558601760419,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Beijing,Beijing,39.904,116.407,13185,475455,0.027731331040792503,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Hubei,Wuhan,30.592,114.306,8538,475455,0.017957535413446066,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
+Guizhou,Guiyang,26.647,106.63,8106,475455,0.017048932075590748,https://www.stats.gov.cn/sj/ndsj/2007/html/M1319e.htm,province-city-or-farming-area-proxy-not-verified-orchard-pixel
