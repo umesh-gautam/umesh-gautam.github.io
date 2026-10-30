@@ -1,0 +1,27 @@
+name: Download official-weight China walnut province weather
+on:
+  push:
+    branches: [sigma-china-official-walnut-2006-20261029]
+permissions:
+  contents: read
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0,1,2,3]
+    env:
+      PART: "${{ matrix.part }}"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve real ERA5 historical daily observations
+        run: |
+          python -m py_compile china2006/download_real_weather.py
+          python china2006/download_real_weather.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-china-weather-part-${{ matrix.part }}
+          path: real_china_weather/
