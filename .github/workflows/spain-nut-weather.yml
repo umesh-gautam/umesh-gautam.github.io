@@ -1,0 +1,31 @@
+name: Download historic Spain almond and hazelnut growing-province weather
+on:
+  push:
+    branches: [sigma-spain-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  weather:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0,1,2,3]
+    timeout-minutes: 15
+    env:
+      PART: "${{ matrix.part }}"
+      NPARTS: "4"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve measured weather from historical climate reanalysis
+        run: |
+          python -m py_compile sigma_research/download_spain_daily.py
+          python sigma_research/download_spain_daily.py
+      - name: Archive original historical observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: measured-ESP-part-${{ matrix.part }}
+          path: weather_output/
+          if-no-files-found: warn
