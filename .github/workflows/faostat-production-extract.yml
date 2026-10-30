@@ -1,0 +1,22 @@
+name: Obtain official historical tree-nut yields and production flags
+on:
+  push:
+    branches: [sigma-faostat-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and subset primary FAOSTAT QCL bulk file
+        run: python faostat/retrieve.py
+      - name: Upload official observed data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: official-faostat-production-yields-with-flags
+          path: out/
+          if-no-files-found: warn
