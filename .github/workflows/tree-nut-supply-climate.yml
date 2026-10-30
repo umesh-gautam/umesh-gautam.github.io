@@ -1,0 +1,32 @@
+name: Measured tree-nut external supply shocks for five producing countries
+on:
+  push:
+    branches: [sigma-weather-supply-expansion-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  region_download:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0, 1, 2, 3, 4]
+    timeout-minutes: 19
+    env:
+      PART: "${{ matrix.part }}"
+      PARTS: "5"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve and validate actual historical climate reanalysis
+        run: |
+          python -m py_compile weather_supply/download_external_shocks.py
+          python weather_supply/download_external_shocks.py
+      - name: Keep successful measured region files and full provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: supply-weather-part-${{ matrix.part }}
+          path: measured_weather/
+          if-no-files-found: warn
+          retention-days: 30
