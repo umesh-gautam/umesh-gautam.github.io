@@ -1,0 +1,38 @@
+name: Urgent Tarragona historical orchard weather
+on:
+  push:
+    branches: [sigma-tarragona-single-20261029]
+permissions:
+  contents: read
+jobs:
+  only_tarragona:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Retrieve Tarragona 1991-2019 daily weather from reanalysis
+        run: |
+          python - <<'PY'
+          import urllib.request,urllib.parse,json,csv,gzip,hashlib
+          from pathlib import Path
+          o=Path("measured");o.mkdir(exist_ok=True)
+          meta=[]
+          datasets={}
+          for model,vars in [("era5_land","temperature_2m_min,temperature_2m_max"),("era5","precipitation_sum")]:
+              q=dict(latitude=41.11910287,longitude=1.2584219,start_date="1991-01-01",end_date="2019-12-31",daily=vars,models=model,timezone="Europe/Madrid",cell_selection="land")
+              url="https://archive-api.open-meteo.com/v1/archive?"+urllib.parse.urlencode(q)
+              with urllib.request.urlopen(url,timeout=95) as f:raw=f.read()
+              d=json.loads(raw)
+              assert len(d["daily"]["time"])==10592 and all(v is not None for c in vars.split(",") for v in d["daily"][c])
+              datasets[model]=d["daily"]
+              meta.append({"model":model,"query":url,"sha256":hashlib.sha256(raw).hexdigest(),"lat":d.get("latitude"),"lon":d.get("longitude")})
+          a,b=datasets["era5_land"],datasets["era5"]
+          with gzip.open(o/"Tarragona_daily.csv.gz","wt",newline="") as f:
+              w=csv.writer(f);w.writerow(["region","province","date","tmin_C","tmax_C","precip_mm","requested_lat","requested_lon"])
+              for i in range(10592):w.writerow(["Tarragona","Tarragona",a["time"][i],a["temperature_2m_min"][i],a["temperature_2m_max"][i],b["precipitation_sum"][i],41.11910287,1.2584219])
+          (o/"source_sha256.json").write_text(json.dumps(meta,indent=2))
+          print("SUCCESS_TARRAGONA_REAL_WEATHER_10592",flush=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tarragona-historical-measured-1991-2019
+          path: measured/
