@@ -1,0 +1,31 @@
+name: Research - measured weather new walnut pistachio counties
+on:
+  push:
+    branches: [sigma-new-counties-20261029]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  download_weather:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0,1,2]
+    timeout-minutes: 12
+    env:
+      PART: "${{ matrix.part }}"
+      NPARTS: "3"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download verified historical data
+        run: |
+          python -m py_compile sigma_research/get_other_counties.py
+          python sigma_research/get_other_counties.py
+      - name: Upload real climate observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: measured-new-counties-part-${{ matrix.part }}
+          path: weather_data/
+          if-no-files-found: warn
