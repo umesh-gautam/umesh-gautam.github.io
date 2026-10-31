@@ -1,0 +1,138 @@
+name: Publish CV grants and forthcoming year once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-grants-cv-once.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-liberation
+          python -m pip install pymupdf
+      - name: Update CV PDF
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          src=Path("assets/Umesh_Gautam_CV.pdf")
+          dst=Path("assets/.cv_updated_with_grants.pdf")
+          source=fitz.open(src)
+          assert len(source)==3
+          assert "Dr. Jeffrey Luckstead" in source[2].get_text()
+          assert "Journal of Agricultural and Resource Economics. Forthcoming" in " ".join(source[0].get_text().split())
+          
+          base="/usr/share/fonts/truetype/liberation/LiberationSerif-"
+          paths={k:base+f for k,f in {"regular":"Regular.ttf","bold":"Bold.ttf","italic":"Italic.ttf"}.items()}
+          fonts={k:fitz.Font(fontfile=v) for k,v in paths.items()}
+          ink=(.122,.122,.122)
+          rule=(.79,.81,.83)
+          doc=fitz.open()
+          doc.insert_pdf(source,from_page=0,to_page=1,links=True,annots=True)
+          p=doc[0]
+          p.add_redact_annot(fitz.Rect(47,490,564,525),fill=(1,1,1))
+          p.apply_redactions(images=0,graphics=0,text=0)
+          for k,v in paths.items():p.insert_font(fontname="CV"+k,fontfile=v)
+          
+          def draw_runs(page,x,y,runs,fontsize=12):
+              for value,kind in runs:
+                  page.insert_text((x,y),value,fontname="CV"+kind,fontsize=fontsize,color=ink)
+                  x+=fonts[kind].text_length(value,fontsize=fontsize)
+              assert x<565,x
+          
+          draw_runs(p,48.35,504.05,[
+           ("3.  ","regular"),("Gautam, U.","bold"),
+           (", and S. Devadoss. 2027 (Forthcoming). ","regular"),
+           ("Implications of Stricter Immigration Policies","bold")])
+          draw_runs(p,64.9,519.5,[
+           ("for US Fruit Production.","bold"),
+           (" Journal of Agricultural and Resource Economics.","italic")])
+          
+          p=doc.new_page(width=612,height=792)
+          for k,v in paths.items():p.insert_font(fontname="CV"+k,fontfile=v)
+          def wrap(s,width,fontsize,style="regular"):
+              lines=[];line=""
+              for word in s.split():
+                  test=(line+" "+word).strip()
+                  if line and fonts[style].text_length(test,fontsize=fontsize)>width:
+                      lines.append(line);line=word
+                  else:line=test
+              if line:lines.append(line)
+              return lines
+          def paragraph(x,y,value,width,fontsize=9.85,style="regular",leading=11.6):
+              for line in wrap(value,width,fontsize,style):
+                  p.insert_text((x,y),line,fontname="CV"+style,fontsize=fontsize,color=ink)
+                  y+=leading
+              return y
+          lx,lw=48.3,241.5
+          rx,rw=320,243.8
+          p.insert_text((lx,55.5),"HONORS & AWARDS (CONTINUED)",fontname="CVbold",fontsize=11.2,color=ink)
+          p.insert_text((rx,55.5),"RESEARCH GRANTS",fontname="CVbold",fontsize=12.4,color=ink)
+          p.draw_line((lx,64),(lx+lw,64),color=rule,width=.6)
+          p.draw_line((rx,64),(rx+rw,64),color=rule,width=.6)
+          
+          honors=[
+           ("2024","Graduate Student Mentor, Davis College Gordon and Joyce Davis Endowed Scholarship, Texas Tech University"),
+           ("2020","Study Abroad Competitive Scholarship, Texas Tech University"),
+           ("2017","Winner, Advertisement Competition, Kathmandu, Nepal"),
+           ("2016","First Runner-up, National Management Festival, Kathmandu, Nepal"),
+           ("2015","Global Commitment Award, Global Enterprise Experience, New Zealand")]
+          y=79.6
+          for date,name in honors:
+              y=paragraph(lx,y,date+"  ·  "+name,lw,fontsize=10,leading=11.6)+4
+          assert y<=247,y
+          grants=[
+           ("2025","Ethnic Population in the United States and Vegetable Imports","Shin Naing"),
+           ("2024","U.S.-Mexico GM Corn Trade Dispute","Chase Hall")]
+          y=79.2
+          for date,title,student in grants:
+              y=paragraph(rx,y,date+"  ·  “"+title+"”",rw,fontsize=10.4,style="bold",leading=12)+1.5
+              y=paragraph(rx,y,"Davis College Undergraduate Research Grant, Texas Tech University · $12,000",rw)+1.2
+              y=paragraph(rx,y,
+                 "Project Director: Stephen Devadoss; Undergraduate Student: "+student+"; Graduate Student: Umesh Gautam",rw)+6.5
+          assert y<=247,y
+          
+          dy=41
+          area=fitz.Rect(43,204,570,708)
+          p.show_pdf_page(fitz.Rect(area.x0,area.y0+dy,area.x1,area.y1+dy),source,2,clip=area,keep_proportion=False,overlay=True)
+          footer=fitz.Rect(43,741,570,787)
+          p.show_pdf_page(footer,source,2,clip=footer,keep_proportion=False,overlay=True)
+          for link in source[2].get_links():
+              if link.get("kind")!=fitz.LINK_URI or not link.get("uri"):continue
+              r=fitz.Rect(link["from"])
+              if r.y0>=204 and r.y1<=708:
+                  p.insert_link({"kind":fitz.LINK_URI,
+                     "from":fitz.Rect(r.x0,r.y0+dy,r.x1,r.y1+dy),"uri":link["uri"]})
+          doc.set_metadata(source.metadata)
+          doc.save(dst,garbage=4,deflate=True)
+          doc.close();source.close()
+          check=fitz.open(dst)
+          alltext=" ".join(" ".join(x.get_text().split()) for x in check)
+          assert len(check)==3
+          assert "2027 (Forthcoming)" in alltext
+          assert "Ethnic Population in the United States and Vegetable Imports" in alltext
+          assert "U.S.-Mexico GM Corn Trade Dispute" in alltext
+          assert alltext.count("$12,000")==2
+          assert "Undergraduate Student: Shin Naing" in alltext
+          assert "Undergraduate Student: Chase Hall" in alltext
+          assert alltext.count("Dr. Jeffrey Luckstead")==1
+          assert len([l for l in check[2].get_links() if l["uri"].startswith("mailto:")])==4
+          check.close()
+          dst.replace(src)
+          
+          PY
+      - name: Commit PDF and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/publish-grants-cv-once.yml
+          git add -A assets/Umesh_Gautam_CV.pdf .github/workflows/publish-grants-cv-once.yml
+          git commit -m "Publish CV with Davis College grants and 2027 forthcoming status"
+          git push
