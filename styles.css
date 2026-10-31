@@ -559,3 +559,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .grant-grid article p strong { font-weight: 700; color: var(--ink); }
 .grant-grid article h3 { font-size: 1rem; line-height: 1.35; }
 .paper-year .pub-status { display: block; font-family: Inter, ui-sans-serif, sans-serif; font-size: .59rem; font-weight: 680; letter-spacing: -.03em; line-height: 1.5; }
+
+/* Grants and forthcoming styles */
+.grant-grid article p + p { margin-top: 8px; }
+.grant-grid article p strong { font-weight: 700; color: var(--ink); }
+.grant-grid article h3 { font-size: 1rem; line-height: 1.35; }
+.paper-year .pub-status { display: block; font-family: Inter, ui-sans-serif, sans-serif; font-size: .59rem; font-weight: 680; letter-spacing: -.03em; line-height: 1.5; }
