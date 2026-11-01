@@ -597,3 +597,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 #research .research-subnav + .subsection-heading {
   margin-top: 9px;
 }
+
+/* Research grants: emphasize the researcher's name only, without other bold details. */
+.grant-grid article > span,
+.grant-grid article h3,
+.grant-grid article p { font-weight: 400; }
+.grant-grid article p strong { font-weight: 700; }
