@@ -34,7 +34,7 @@ jobs:
           for old,new in margin_grant_updates:
               assert script.count(old)==1,(repr(old),script.count(old))
               script=script.replace(old,new)
-          grant_code=script.split("heading('Research Grants')",1)[1].split('# Technical skills',1)[0]
+          grant_code=script.split("heading('Research Grants')",1)[1].split("heading('Technical Skills')",1)[0]
           assert grant_code.count('<b>Umesh Gautam</b>')==1
           assert grant_code.count('<b>')==1
           assert 'topMargin=49,bottomMargin=49' in script
