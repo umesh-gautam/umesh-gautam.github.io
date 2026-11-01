@@ -620,3 +620,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 #grants .grant-grid article p strong {
   font-weight: 700;
 }
+
+/* Keep forthcoming publication status regular weight, matching the CV. */
+#research .paper-year,
+#research .paper-year .pub-status { font-weight: 400; }
