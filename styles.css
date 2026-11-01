@@ -603,3 +603,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .grant-grid article h3,
 .grant-grid article p { font-weight: 400; }
 .grant-grid article p strong { font-weight: 700; }
+
+/* Paper titles and researcher names use one consistent emphasis system. */
+#research .feature-paper h3,
+#research .paper-content h4,
+#research .project-card h4 {
+  font-weight: 700;
+}
+#research .paper-authors strong,
+#research .project-authors strong {
+  font-weight: 700;
+}
+#grants .grant-grid article h3 {
+  font-weight: 400;
+}
+#grants .grant-grid article p strong {
+  font-weight: 700;
+}
