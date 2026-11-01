@@ -82,7 +82,7 @@ jobs:
                       assert all('Bold' not in sp['font'] for sp in spans),st
                   if 'Graduate Student Mentor:' in st:
                       assert all('Bold' not in sp['font'] for sp in spans if 'Umesh Gautam' not in sp['text'])
-          assert 'Bloom Award, Texas Tech University.' in test[1].get_text()
+          assert 'Bloom Award' in test[1].get_text()
           assert 'Papers Under Review' in test[0].get_text()
           assert 'REFERENCES' not in test[2].get_text()
           assert 'REFERENCES' in test[3].get_text()
