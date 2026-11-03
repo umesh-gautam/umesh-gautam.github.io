@@ -1,0 +1,73 @@
+name: Add research subsection rules to approved CV once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/add-cv-research-subsection-rules-once.yml'
+permissions:
+  contents: write
+jobs:
+  update-cv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF editing package
+        run: python -m pip install pymupdf
+      - name: Add thin gray rules without modifying CV content
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, os
+          p=Path("assets/Umesh_Gautam_CV.pdf")
+          original=fitz.open(p)
+          assert len(original)==4
+          updated=fitz.open(p)
+          for idx,name in [(0,"Publications"),(0,"Working Papers"),(1,"Research in Progress")]:
+              page=updated[idx]
+              matches=page.search_for(name)
+              assert len(matches)==1,(name,matches)
+              heading=matches[0]
+              rule_y=heading.y1+3.55
+              next_y=min((line["bbox"][1] for block in page.get_text("dict")["blocks"]
+                     for line in block.get("lines",[])
+                     if line["bbox"][1]>heading.y1+4),default=999)
+              assert rule_y+2<next_y,(name,heading.y1,rule_y,next_y)
+              strokes=[d for d in page.get_drawings() if
+                  d.get("type")=="s" and d["rect"].width>490 and d["rect"].height<.1]
+              assert strokes,(idx,name)
+              stroke=strokes[0]
+              page.draw_line((55,rule_y),(557,rule_y),
+                  color=stroke["color"],width=stroke["width"],overlay=True)
+          output=p.with_name(".cv_rules_temp.pdf")
+          updated.save(output,garbage=3,deflate=True)
+          updated.close()
+          check=fitz.open(output)
+          assert len(check)==4
+          for i in range(4):
+              assert check[i].get_text()==original[i].get_text(),i
+              assert check[i].get_links()==original[i].get_links(),i
+              if i>=2:
+                  assert check[i].get_pixmap().samples==original[i].get_pixmap().samples,i
+          for i,name in [(0,"Publications"),(0,"Working Papers"),(1,"Research in Progress")]:
+              heading=check[i].search_for(name)[0]
+              y=heading.y1+3.55
+              assert any(abs(d["rect"].y0-y)<.05 and d["rect"].width>490
+                         for d in check[i].get_drawings()),name
+          assert "Scheduled Spring 2027" in check[1].get_text()
+          assert "Gautam, U., and S. Devadoss. 2026. Does Market Conduct Matter?" in " ".join(check[0].get_text().split())
+          assert "Dr. Jeffrey Luckstead" in check[3].get_text()
+          check.close();original.close()
+          os.replace(output,p)
+          print("PASS: only three new section rules; all four pages, text, hyperlinks, and structure preserved")
+          
+          PY
+      - name: Commit PDF and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm '.github/workflows/add-cv-research-subsection-rules-once.yml'
+          git add -A assets/Umesh_Gautam_CV.pdf '.github/workflows/add-cv-research-subsection-rules-once.yml'
+          git commit -m "Add matching horizontal lines below CV research subsections"
+          git push
