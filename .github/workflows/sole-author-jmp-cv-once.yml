@@ -1,0 +1,125 @@
+name: Update sole job-market-paper author on CV once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sole-author-jmp-cv-once.yml'
+permissions:
+  contents: write
+jobs:
+  revise:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-liberation
+          python -m pip install pymupdf pillow
+      - name: Update job-market-paper author only and retain scheduled teaching
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import fitz, os
+          from PIL import Image,ImageChops
+          path=Path("assets/Umesh_Gautam_CV.pdf")
+          doc=fitz.open(path)
+          before=fitz.open(path)
+          assert len(doc)==4
+          p=doc[0]
+          blocks=p.get_text('dict')['blocks']
+          lines=[ln for b in blocks for ln in b.get('lines',[])
+                  if 'Does Market Conduct Matter? Evidence from Global Tree-Nut' in
+                  ''.join(s['text'] for s in ln['spans'])]
+          assert len(lines)==1,len(lines)
+          line=lines[0]
+          textline=''.join(s['text'] for s in line['spans'])
+          assert textline.startswith("Gautam, U., and S. Devadoss. 2026. "),textline
+          assert all('LiberationSerif' in s['font'] for s in line['spans'])
+          start=line['spans'][0]
+          x,y=start['origin']
+          size=start['size']
+          col=start['color']
+          rgb=(((col>>16)&255)/255.,((col>>8)&255)/255.,(col&255)/255.)
+          r=fitz.Rect(x-2,line['bbox'][1]-1,line['bbox'][2]+2,line['bbox'][3]+1)
+          p.add_redact_annot(r,fill=(1,1,1))
+          p.apply_redactions(images=0,graphics=0,text=0)
+          paths={
+              'B':'/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf',
+              'R':'/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf'
+          }
+          for k,fontpath in paths.items():p.insert_font(fontname='Edit'+k,fontfile=fontpath)
+          chunks=[
+              ('Umesh Gautam','B'),
+              ('. 2026. ','R'),
+              ('Does Market Conduct Matter? Evidence from Global Tree-Nut','B')
+          ]
+          for txt,font in chunks:
+              p.insert_text((x,y),txt,fontname='Edit'+font,fontsize=size,color=rgb)
+              x+=fitz.Font(fontfile=paths[font]).text_length(txt,fontsize=size)
+          assert x<560,x
+          # Match latest CV: retain "Scheduled Spring 2027" from the last local revision.
+          p2=doc[1]
+          original_p2=before[1]
+          scheduled='Scheduled Spring 2027'
+          expected='Expected Spring 2027'
+          if scheduled not in p2.get_text():
+              matches=[]
+              for b in p2.get_text('dict')['blocks']:
+                  for ln in b.get('lines',[]):
+                      s=''.join(t['text'] for t in ln['spans'])
+                      if s.strip()==expected:matches.append(ln)
+              assert len(matches)==1,matches
+              ln=matches[0]
+              s=ln['spans'][0]
+              x0,y0=s['origin']
+              size=s['size']
+              r2=fitz.Rect(ln['bbox'][0]-2,ln['bbox'][1]-1,ln['bbox'][2]+2,ln['bbox'][3]+1)
+              p2.add_redact_annot(r2,fill=(1,1,1))
+              p2.apply_redactions(images=0,graphics=0,text=0)
+              font=fitz.Font(fontfile=paths['R'])
+              xmax=ln['bbox'][2]
+              xx=xmax-font.text_length(scheduled,fontsize=size)
+              p2.insert_font(fontname='EditR',fontfile=paths['R'])
+              col=s['color'];rgb2=(((col>>16)&255)/255.,((col>>8)&255)/255.,(col&255)/255.)
+              p2.insert_text((xx,y0),scheduled,fontsize=size,fontname='EditR',color=rgb2)
+          else:
+              r2=None
+          temp=Path("assets/.Umesh_Gautam_CV_author_temp.pdf")
+          doc.save(temp,garbage=3,deflate=True)
+          doc.close()
+          now=fitz.open(temp)
+          assert len(now)==4
+          assert 'Working Papers' in now[0].get_text()
+          assert 'Umesh Gautam. 2026. Does Market Conduct Matter?' in ' '.join(now[0].get_text().split())
+          assert 'Gautam, U., and S. Devadoss. 2026. Does Market Conduct Matter?' not in ' '.join(now[0].get_text().split())
+          assert 'Scheduled Spring 2027' in now[1].get_text()
+          assert 'Dr. Jeffrey Luckstead' in now[3].get_text()
+          assert sum(pg.get_text().count("Target:") for pg in now)==5
+          for idx in (2,3):
+              assert now[idx].get_text()==before[idx].get_text()
+              assert now[idx].get_pixmap().samples==before[idx].get_pixmap().samples
+          for idx,box in [(0,r),(1,r2)]:
+              if box is None:continue
+              m=fitz.Matrix(1.5,1.5)
+              a=before[idx].get_pixmap(matrix=m,alpha=False)
+              b=now[idx].get_pixmap(matrix=m,alpha=False)
+              d=ImageChops.difference(Image.frombytes('RGB',(a.width,a.height),a.samples),
+                                      Image.frombytes('RGB',(b.width,b.height),b.samples)).getbbox()
+              assert d and d[1]>=int((box.y0-1)*1.5) and d[3]<=int((box.y1+1)*1.5),(idx,d,box)
+          assert len(now[0].get_links())==len(before[0].get_links())
+          now.close();before.close()
+          os.replace(temp,path)
+          print("Verified sole-author CV; scheduled teaching and other CV content preserved.")
+          
+          PY
+      - name: Publish corrected CV and clean up one-time action
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm '.github/workflows/sole-author-jmp-cv-once.yml'
+          git add -A assets/Umesh_Gautam_CV.pdf '.github/workflows/sole-author-jmp-cv-once.yml'
+          git commit -m "List Umesh Gautam as sole job-market-paper author in website CV"
+          git push
