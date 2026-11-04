@@ -1,0 +1,91 @@
+name: Restore Papers Under Review and remove journal target lines in CV
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/cv-papers-under-review-remove-targets-once.yml'
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PDF tools and original serif font
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-liberation
+          python -m pip install pymupdf
+      - name: Update only research status and journal targets
+        shell: bash
+        run: |
+          python - <<'PY'
+          import fitz,os
+          from pathlib import Path
+          source=Path("assets/Umesh_Gautam_CV.pdf")
+          doc=fitz.open(source)
+          before=fitz.open(source)
+          assert len(doc)==4
+          assert before[0].get_text().count("Working Papers")==1
+          assert sum(p.get_text().count("Target:") for p in before)==5
+          assert "Dr. Khondoker A. Mottaleb" in before[3].get_text()
+          assert "Scheduled Spring 2027" in before[1].get_text()
+          heading=[s for b in before[0].get_text("dict")["blocks"] for l in b.get("lines",[])
+                   for s in l["spans"] if s["text"]=="Working Papers"]
+          assert len(heading)==1
+          h=heading[0]
+          removed=0
+          for i in (0,1):
+              page=doc[i]
+              original=before[i]
+              for b in original.get_text("dict")["blocks"]:
+                  for l in b.get("lines",[]):
+                      if not "".join(s["text"] for s in l["spans"]).startswith("Target: "):continue
+                      rect=fitz.Rect(l["bbox"])
+                      page.add_redact_annot(fitz.Rect(rect.x0-.6,rect.y0-.3,rect.x1+1.2,rect.y1+.3),fill=(1,1,1))
+                      removed+=1
+              if i==0:
+                  box=fitz.Rect(h["bbox"])
+                  page.add_redact_annot(fitz.Rect(box.x0-.5,box.y0-.4,258,box.y1+.4),fill=(1,1,1))
+              page.apply_redactions(images=0,graphics=0,text=0)
+          assert removed==5,removed
+          font="/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf"
+          if not Path(font).exists():
+              font="/usr/share/fonts/truetype/liberation2/LiberationSerif-Bold.ttf"
+          col=h["color"]
+          rgb=((col>>16&255)/255.,(col>>8&255)/255.,(col&255)/255.)
+          doc[0].insert_font(fontname="CVUnderReviewBold",fontfile=font)
+          doc[0].insert_text(h["origin"],"Papers Under Review",fontsize=h["size"],
+                             fontname="CVUnderReviewBold",color=rgb)
+          temp=Path("assets/.cv_under_review_temp.pdf")
+          doc.save(temp,garbage=4,deflate=True)
+          doc.close()
+          cv=fitz.open(temp)
+          assert len(cv)==4
+          t=" ".join(" ".join(pg.get_text().split()) for pg in cv)
+          assert "Papers Under Review" in t and "Working Papers" not in t
+          assert "Target:" not in t
+          assert "Dr. Khondoker A. Mottaleb" in cv[3].get_text()
+          assert "Scheduled Spring 2027" in cv[1].get_text()
+          assert "Gautam, U., and S. Devadoss. 2026. Does Market Conduct Matter?" in " ".join(cv[0].get_text().split())
+          assert len(cv[3].get_links())==5
+          for i in range(4):
+              assert len(cv[i].get_links())==len(before[i].get_links()),i
+          for i in (2,3):
+              assert cv[i].get_text()==before[i].get_text(),i
+              assert cv[i].get_pixmap().samples==before[i].get_pixmap().samples,i
+          assert cv[0].search_for("Papers Under Review")
+          cv.close();before.close()
+          os.replace(temp,source)
+          print("PASS: Four-page CV, 5 target lines removed, Papers Under Review restored, references and teaching retained")
+          
+          PY
+      - name: Commit corrected PDF and remove temporary workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm '.github/workflows/cv-papers-under-review-remove-targets-once.yml'
+          git add -A assets/Umesh_Gautam_CV.pdf '.github/workflows/cv-papers-under-review-remove-targets-once.yml'
+          git commit -m "Change CV to Papers Under Review and remove all target journals"
+          git push
