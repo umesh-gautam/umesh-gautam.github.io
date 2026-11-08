@@ -712,9 +712,6 @@ main > .section-tint { margin-top: 9px; margin-bottom: 9px; }
   color:#6b5962;
   line-height:1.53;
 }
-@media (min-width:981px) {
-  #research .project-card{min-height:260px;}
-}
 
 /* Balanced recognition cards and calm, consistent footnotes. */
 .recognition-grid article h3{overflow-wrap:break-word;}
