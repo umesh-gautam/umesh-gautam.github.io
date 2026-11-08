@@ -37,7 +37,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-off
 .hero::before{content:"";position:absolute;z-index:-1;inset:0 -6vw auto -6vw;height:100%;background:radial-gradient(ellipse 54% 52% at 89% 46%,rgba(140,29,64,.085),transparent 76%),radial-gradient(ellipse 42% 45% at 6% 3%,rgba(140,29,64,.032),transparent 80%);pointer-events:none;}
 .hero::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--line) 14%,var(--line) 86%,transparent);}
 .hero-copy{padding:0;position:relative;}
-.hero-eyebrow{display:flex;align-items:center;gap:12px;margin:0 0:24px;color:var(--accent);text-transform:uppercase;font-size:.71rem;line-height:1.4;font-weight:790;letter-spacing:.18em;}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin:0 0 24px;color:var(--accent);text-transform:uppercase;font-size:.71rem;line-height:1.4;font-weight:790;letter-spacing:.18em;}
 .hero-eyebrow::before{content:"";display:block;width:27px;height:1px;background:var(--accent);}
 .hero h1{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;font-size:clamp(3.45rem,7.65vw,6.7rem);font-weight:775;line-height:.99;letter-spacing:-.082em;max-width:880px;margin:0 0 20px;color:#171719;}
 .hero h1::after{content:".";color:var(--accent);}
