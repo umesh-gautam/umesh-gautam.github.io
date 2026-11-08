@@ -604,3 +604,151 @@ main > .section-tint { margin-top: 9px; margin-bottom: 9px; }
   .abstract-panel:not([hidden]) { animation:none; }
   .paper-content h4,.skills-list span { transition:none; }
 }
+
+
+/* Editorial finishing v4 — compact, legible and intentionally composed. */
+
+/* Name-based masthead, recognisable but still unobtrusive. */
+.brand{
+  font-size:.98rem;
+  font-weight:770;
+  letter-spacing:-.027em;
+  white-space:nowrap;
+}
+.brand span{font-size:1.25rem;margin-left:1px;}
+.nav-wrap{gap:14px;}
+
+/* Maintain the same quiet typographic hierarchy in every section. */
+.section-heading h2,.contact-section h2{
+  font-size:clamp(1.47rem,2vw,1.79rem);
+}
+.hero h1{
+  font-size:clamp(2.05rem,3.3vw,2.65rem);
+  font-weight:730;
+}
+.hero-copy .hero-intro { max-width:71ch; }
+.hero-expertise{margin-top:17px;padding-top:12px;}
+.section-heading{margin-bottom:16px;}
+#research .subsection-heading h3{font-size:1.13rem!important;}
+
+/* Current degree appears as a discreet lead item, never as a loud badge. */
+.education-primary{
+  border-left:2px solid #cda5b4;
+  padding-left:14px;
+  background:linear-gradient(90deg,rgba(135,49,81,.032),transparent 64%);
+}
+.education-primary:hover{background:linear-gradient(90deg,rgba(135,49,81,.052),transparent 64%);}
+
+/* Featured research has a distinctive editorial two-column composition.
+   This is not a large promotional banner and collapses gracefully. */
+@media (min-width:861px){
+  .feature-paper{
+    display:grid;
+    grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);
+    grid-template-rows:auto auto 1fr;
+    column-gap:clamp(22px,3vw,37px);
+    row-gap:2px;
+    align-items:start;
+  }
+  .feature-paper .paper-kicker{grid-column:1;grid-row:1;}
+  .feature-paper h3{grid-column:1;grid-row:2;}
+  .feature-paper .paper-authors{grid-column:1;grid-row:3;margin-bottom:0;}
+  .feature-paper .paper-summary{
+    grid-column:2;
+    grid-row:1 / span 3;
+    align-self:center;
+    border-left:1px solid #e6d4dc;
+    padding-left:clamp(21px,2.5vw,29px);
+    margin:0;
+    line-height:1.68;
+  }
+}
+@media (max-width:860px){
+  .feature-paper .paper-summary{
+    margin-top:13px;
+    padding-top:12px;
+    border-top:1px solid #e8dbe0;
+  }
+}
+.feature-paper::after{opacity:.6;}
+.feature-paper .paper-kicker{display:inline-flex;align-items:center;gap:8px;}
+.feature-paper .paper-kicker::before{
+  content:"";
+  width:6px;height:6px;
+  border:1.5px solid var(--accent);
+  border-radius:50%;
+}
+
+/* Publication actions have a clear state without introducing image assets. */
+.abstract-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:25px;
+}
+.abstract-toggle::after{
+  content:"+";
+  display:inline-grid;
+  width:18px;height:18px;
+  place-items:center;
+  border:1px solid #e5cfd8;
+  border-radius:50%;
+  background:#fffafa;
+  font-size:.82rem;
+  font-weight:650;
+  line-height:1;
+  text-decoration:none;
+}
+.abstract-toggle[aria-expanded="true"]::after{content:"−";}
+.abstract-toggle:hover::after{border-color:var(--accent);background:var(--accent-soft);}
+.paper-links{row-gap:7px;}
+.paper-content .journal{line-height:1.47;}
+
+/* Project cards: balanced height and clearer separation of methods. */
+.project-card{min-width:0;gap:0;}
+.project-card h4{hyphens:auto;overflow-wrap:break-word;}
+.project-card .project-method{
+  font-weight:590;
+  color:#6b5962;
+  line-height:1.53;
+}
+@media (min-width:981px) {
+  #research .project-card{min-height:260px;}
+}
+
+/* Balanced recognition cards and calm, consistent footnotes. */
+.recognition-grid article h3{overflow-wrap:break-word;}
+.grant-grid article{border-top:2px solid #e5c5d0;}
+.grant-grid article p{line-height:1.55;}
+.reference-grid p{margin-bottom:9px;}
+.site-footer a{font-weight:610;}
+
+/* More compact and usable tablet/mobile navigation. */
+@media (max-width:980px){
+  .site-nav.open{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    column-gap:6px;
+    row-gap:2px;
+  }
+  .site-nav .nav-cv{grid-column:1 / -1;margin-top:7px;}
+  .site-nav a{min-width:0;overflow-wrap:break-word;}
+  .nav-wrap{gap:10px;}
+}
+@media (max-width:740px){
+  .hero h1{font-size:clamp(2rem,6.25vw,2.45rem);}
+  .hero-photo{max-width:155px;}
+  .feature-paper .paper-summary{padding-top:12px;}
+  .education-primary{padding-left:10px;}
+}
+@media (max-width:490px){
+  .hero h1{font-size:clamp(2.03rem,8.7vw,2.48rem);}
+  .hero-expertise{grid-template-columns:1fr 1fr;gap:10px;}
+  .site-nav.open{padding:10px;}
+  .site-nav a{padding:9px 8px;font-size:.80rem;}
+  .feature-paper{padding:17px;}
+  #research .feature-paper h3{font-size:1.12rem;}
+}
+@media (prefers-reduced-motion:reduce){
+  .abstract-toggle::after,.education-primary{transition:none;}
+}
