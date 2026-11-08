@@ -13,12 +13,31 @@
   progress.setAttribute('aria-label', 'Page reading progress');
   document.body.prepend(progress);
 
-  const backToTop = document.createElement('a');
-  backToTop.href = '#top';
+  // Use an explicit scroll action: hash navigation to a sticky header is
+  // inconsistent in some browsers and may appear to do nothing.
+  const goToTop = () => {
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'instant' : 'smooth' });
+    } catch {
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const backToTop = document.createElement('button');
+  backToTop.type = 'button';
   backToTop.className = 'back-to-top';
   backToTop.textContent = '↑';
   backToTop.setAttribute('aria-label', 'Back to top');
+  backToTop.addEventListener('click', goToTop);
   document.body.append(backToTop);
+
+  document.querySelectorAll('a[href="#top"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      goToTop();
+    });
+  });
 
   let scheduled = false;
   function refreshScrollUI() {
