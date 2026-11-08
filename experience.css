@@ -469,3 +469,138 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
 
 /* Native floating button usability. */
 .back-to-top{appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit;line-height:1;padding:0;}
+
+
+/* Editorial polish v3 — restrained details for an academic portfolio.
+   Keep font size and spacing compact; avoid decorative visual noise. */
+
+/* Section boundaries give the long CV-style page a clear reading rhythm. */
+main > .section:not(.section-tint):not(#contact) {
+  border-top: 1px solid rgba(135,49,81,.09);
+}
+.hero + #education { border-top: 0; }
+main > .section-tint { margin-top: 9px; margin-bottom: 9px; }
+.section-heading h2,
+.contact-section h2 { text-wrap: balance; }
+.paper-content h4,
+.project-card h4,
+.feature-paper h3 { text-wrap: pretty; }
+
+/* A quieter, more recognisable editorial accent. */
+.section-heading h2::before,
+.contact-section h2::before {
+  background: linear-gradient(90deg,var(--accent) 0 72%,#dcb6c4 72% 100%);
+  width: 34px;
+}
+.hero h1 { letter-spacing: -.047em; }
+.hero h1::after { color: #b06a83; }
+.hero-photo { border-color: #fff; }
+
+/* Reading aids: date rail and softly highlighted link actions. */
+.paper-list { border-top: 1px solid var(--line); }
+.paper-item { align-items: start; border-color:var(--line); }
+.paper-year { border-left: 2px solid #d9bbc6; padding-left: 10px; line-height: 1.55; }
+.paper-year .pub-status { margin-top:2px; color:var(--muted); }
+.paper-content h4 { color:#2e282c; transition:color .22s ease; }
+.paper-item:hover .paper-content h4 { color:var(--accent); }
+.paper-content .journal { margin-bottom:10px; color:#554d53; }
+.paper-links .text-button:hover { color:#64223a; text-decoration-thickness:1.5px; }
+.text-button:focus-visible { outline-offset: 5px; }
+.abstract-panel:not([hidden]) { animation: abstract-appear .28s ease-out both; }
+@keyframes abstract-appear {
+  from { opacity:0; transform:translateY(-5px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* An academic research index that remains easy to navigate on desktop. */
+@media (min-width: 741px) {
+  #research .research-subnav {
+    position: sticky;
+    top: 59px;
+    z-index: 20;
+    width: fit-content;
+    max-width:100%;
+    padding: 9px;
+    margin: 0 0 13px -9px;
+    background: rgba(251,250,248,.96);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid #eee6e8;
+    border-radius: 12px;
+    box-shadow: 0 5px 22px rgba(58,30,39,.04);
+  }
+  #research .research-subnav a {
+    border:1px solid transparent;
+    background:transparent;
+    padding: 6px 11px;
+    font-size:.74rem;
+  }
+  #research .research-subnav a:hover {
+    background:var(--accent-soft);
+    border-color: #f0e1e6;
+    color:var(--accent);
+    transform:none;
+  }
+  #research .research-subnav a.is-active {
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#fff;
+  }
+  #publications,#papers-under-review,#research-in-progress { scroll-margin-top:127px; }
+}
+
+/* Present all three ongoing projects evenly instead of leaving an orphan card. */
+@media (min-width: 981px) {
+  #research .project-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+.project-card { transition-duration: .28s; }
+.project-card::before { background:linear-gradient(90deg,var(--accent),#dbaabe);width:30px; }
+.project-card:hover { transform:translateY(-2px); }
+
+/* Unified professional treatment across qualifications and recognition. */
+.skills-list span { transition: border-color .2s ease, background-color .2s ease; }
+.skills-list span:hover { border-color:#dcbcc7; background:var(--accent-soft); }
+.timeline-item, .activity-row { transition:background .24s ease; }
+.timeline-item:hover, .activity-row:hover { background:rgba(135,49,81,.025); }
+.recognition-grid article { position:relative; }
+.recognition-grid article::before {
+  content:"";
+  position:absolute;
+  top:12px;right:14px;
+  width:5px;height:5px;
+  border-radius:50%;
+  background:#d1a2b2;
+  opacity:.8;
+}
+.recognition-grid article h3 { padding-right:9px; }
+.reference-grid a,
+.contact-actions a { overflow-wrap:anywhere; text-decoration-color:#c89caf; }
+.contact-card { border-top: 2px solid #dcbac5; }
+.contact-card p { max-width:32ch; }
+.contact-actions a:focus-visible,
+.reference-grid a:focus-visible { outline-color:var(--accent); }
+
+/* Compact menu navigation remains unobstructed on phones/tablets. */
+@media (max-width:980px) {
+  #research .project-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .site-nav { max-height: min(76vh,610px); overflow-y:auto; }
+}
+@media (max-width:740px) {
+  #research .research-subnav {
+    display:flex; flex-wrap:wrap;
+    gap:7px;
+  }
+  #research .research-subnav a {padding:6px 10px;}
+  #research .research-subnav a.is-active {
+    color:var(--accent); border-color:#c88da3;
+    background:var(--accent-soft);
+  }
+  #research .project-grid { grid-template-columns:1fr; }
+  main > .section-tint { margin-top:4px; margin-bottom:4px; }
+  #publications,#papers-under-review,#research-in-progress { scroll-margin-top:77px; }
+  .hero-photo { box-shadow:0 6px 22px rgba(49,26,35,.08); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .abstract-panel:not([hidden]) { animation:none; }
+  .paper-content h4,.skills-list span { transition:none; }
+}
