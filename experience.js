@@ -68,9 +68,8 @@
         }
       }
     }, { threshold: .045, rootMargin: '0px 0px -5% 0px' });
-    nodes.forEach((node, index) => {
+    nodes.forEach((node) => {
       node.classList.add('reveal');
-      node.style.setProperty('--reveal-delay', String(Math.min(index % 4, 3) * 70) + 'ms');
       observer.observe(node);
     });
     document.documentElement.classList.add('motion-ready');
