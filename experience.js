@@ -11,6 +11,13 @@
     link,
     target: document.getElementById(link.getAttribute('href').slice(1))
   }));
+  // Pair existing abstract toggles with their panels for screen readers.
+  document.querySelectorAll('.abstract-toggle').forEach((button, i) => {
+    const panel = button.closest('article')?.querySelector('.abstract-panel');
+    if (!panel) return;
+    if (!panel.id) panel.id = 'paper-abstract-' + (i + 1);
+    button.setAttribute('aria-controls', panel.id);
+  });
 
   const progress = document.createElement('progress');
   progress.className = 'scroll-progress';
