@@ -749,3 +749,35 @@ main > .section-tint { margin-top: 9px; margin-bottom: 9px; }
 @media (prefers-reduced-motion:reduce){
   .abstract-toggle::after,.education-primary{transition:none;}
 }
+
+
+/* Heading lift v5: same restrained upward interaction as View research.
+   Applies to section, subsection, paper, project, and academic titles.
+   Text remains non-clickable unless it was already a link. */
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  main h1,
+  main h2,
+  main h3,
+  main h4 {
+    transition: transform .28s cubic-bezier(.2,.7,.2,1), color .24s ease;
+    will-change: auto;
+  }
+  main h1:hover,
+  main h2:hover,
+  main h3:hover,
+  main h4:hover {
+    transform: translateY(-3px);
+  }
+  /* Entrance animation also acts on the hero title; permit hover to win. */
+  .motion-ready .hero h1.reveal.is-visible:hover {
+    transform: translateY(-3px);
+  }
+  .section-heading h2:hover,
+  .contact-section h2:hover,
+  .subsection-heading h3:hover {
+    color: var(--accent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  main h1,main h2,main h3,main h4 { transition:none;transform:none!important; }
+}
