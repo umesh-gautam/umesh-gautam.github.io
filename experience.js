@@ -122,7 +122,7 @@
   if (!reducedMotion && 'IntersectionObserver' in window) {
     const nodes = document.querySelectorAll(
       '.hero-copy > .hero-eyebrow, .hero-copy > h1, .hero-copy > .role, .hero-copy > .hero-intro, ' +
-      '.hero-actions, .hero-expertise, .hero-photo, .section-heading, ' +
+      '.hero-actions, .hero-expertise, .hero-photo, .section-heading, .subsection-heading, ' +
       '.education-row, .experience-card, .feature-paper, .paper-item, .project-card, ' +
       '.timeline-item, .recognition-grid > article, .activity-row, .reference-grid > article, ' +
       '.contact-card, .service-column, .grant-grid > article'
