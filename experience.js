@@ -5,6 +5,12 @@
   const nav = document.querySelector('.site-nav');
   const sections = [...document.querySelectorAll('main > section[id]')];
   const links = [...(nav?.querySelectorAll('a[href^="#"]') || [])];
+  const researchSection = document.getElementById('research');
+  const researchLinks = [...document.querySelectorAll('.research-subnav a[href^="#"]')];
+  const researchTargets = researchLinks.map((link) => ({
+    link,
+    target: document.getElementById(link.getAttribute('href').slice(1))
+  }));
 
   const progress = document.createElement('progress');
   progress.className = 'scroll-progress';
@@ -59,6 +65,21 @@
       if (active) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     }
+    // Indicate the subsection currently being read without hiding any papers.
+    const region = researchSection?.getBoundingClientRect();
+    const readingResearch = Boolean(region && region.top <= 180 && region.bottom >= 180);
+    let activeResearch = '';
+    if (readingResearch) {
+      for (const { target } of researchTargets) {
+        if (target && target.getBoundingClientRect().top <= 190) activeResearch = target.id;
+      }
+    }
+    for (const { link, target } of researchTargets) {
+      const isActive = Boolean(target && activeResearch === target.id);
+      link.classList.toggle('is-active', isActive);
+      if (isActive) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    }
   }
   const onScroll = () => {
     if (scheduled) return;
@@ -69,6 +90,26 @@
   window.addEventListener('resize', onScroll, { passive: true });
   window.addEventListener('load', refreshScrollUI);
   refreshScrollUI();
+
+  // Make the existing responsive menu easier to use with keyboard or touch.
+  const menuButton = document.querySelector('.menu-button');
+  const closeMenu = () => {
+    if (!nav?.classList.contains('open')) return;
+    nav.classList.remove('open');
+    menuButton?.setAttribute('aria-expanded','false');
+  };
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && nav?.classList.contains('open')) {
+      closeMenu();
+      menuButton?.focus();
+    }
+  });
+  document.addEventListener('pointerdown', (event) => {
+    if (nav?.classList.contains('open') && !header?.contains(event.target)) closeMenu();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 980) closeMenu();
+  }, { passive:true });
 
   const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
   if (!reducedMotion && 'IntersectionObserver' in window) {
