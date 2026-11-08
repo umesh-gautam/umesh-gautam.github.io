@@ -230,15 +230,15 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
   grid-template-columns:minmax(0,1fr) minmax(190px,215px);
   gap:clamp(28px,4.5vw,60px);
   min-height:0;
-  padding-top:40px;
-  padding-bottom:33px;
+  padding-top:32px;
+  padding-bottom:27px;
   align-items:center;
 }
 .hero::before{background:radial-gradient(ellipse 36% 54% at 83% 43%,rgba(135,49,81,.043),transparent 82%);}
 .hero::after{opacity:.75;}
 .hero-eyebrow{gap:9px;margin:0 0 11px;font-size:.67rem;letter-spacing:.13em;font-weight:750;}
 .hero-eyebrow::before{width:20px;}
-.hero h1{font-size:clamp(2.35rem,4.15vw,3.35rem);line-height:1.045;letter-spacing:-.058em;font-weight:740;margin:0 0 9px;}
+.hero h1{font-size:clamp(2.08rem,3.35vw,2.75rem);line-height:1.045;letter-spacing:-.058em;font-weight:740;margin:0 0 9px;}
 .hero-copy .role{font-size:clamp(.98rem,1.25vw,1.08rem);font-weight:620;line-height:1.4;margin:0 0 13px;letter-spacing:-.014em;}
 .hero-copy .hero-intro{max-width:740px;font-size:.91rem;line-height:1.67;color:#524a50;}
 .hero-actions{margin-top:18px;gap:9px;}
@@ -263,11 +263,11 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
 .hero-photo:hover .portrait img{transform:scale(1.025);}
 .scroll-hint{display:none;}
 /* Consistent section hierarchy and compact vertical rhythm. */
-.section,.compact-section{padding-top:38px;padding-bottom:38px;scroll-margin-top:72px;}
-.hero + #education{padding-top:30px;}
+.section,.compact-section{padding-top:31px;padding-bottom:31px;scroll-margin-top:72px;}
+.hero + #education{padding-top:23px;}
 .section-heading,.compact-heading,.research-heading{margin-bottom:17px;}
 .section-heading h2,.contact-section h2{
-  font-size:clamp(1.62rem,2.5vw,2.05rem);
+  font-size:clamp(1.48rem,2.05vw,1.84rem);
   line-height:1.16;
   letter-spacing:-.04em;
   font-weight:730;
@@ -407,7 +407,7 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
 .email-link{font-size:clamp(.98rem,1.5vw,1.2rem);letter-spacing:-.02em;}
 .contact-card p{font-size:.79rem;line-height:1.64;}
 .contact-actions{margin-top:11px;padding-top:11px;}
-.site-footer{min-height:75px;font-size:.75rem;}
+.site-footer{min-height:70px;font-size:.75rem;}
 .site-footer a:hover{color:var(--accent);}
 .back-to-top{
   right:19px;bottom:19px;
@@ -431,7 +431,7 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
   .menu-button{min-height:34px;font-size:.77rem;padding:6px 12px;}
   .hero{grid-template-columns:minmax(0,1fr) 205px;gap:27px;padding-top:35px;padding-bottom:27px;}
   .hero-photo{max-width:205px;}
-  .section,.compact-section{padding-top:34px;padding-bottom:34px;}
+  .section,.compact-section{padding-top:29px;padding-bottom:29px;}
 }
 @media (max-width:740px){
   .section-shell,.nav-wrap{width:min(calc(100% - 30px),var(--max));}
@@ -442,7 +442,7 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
   .hero-photo{max-width:155px;align-self:start;}
   .hero-expertise{grid-template-columns:1fr;gap:9px;margin-top:16px;padding-top:12px;}
   .quick-links{margin-top:11px;}
-  .section,.compact-section{padding-top:31px;padding-bottom:31px;}
+  .section,.compact-section{padding-top:27px;padding-bottom:27px;}
   .hero + #education{padding-top:22px;}
   .section-heading h2,.contact-section h2{font-size:clamp(1.5rem,4.9vw,1.9rem);}
   .section-heading h2::before,.contact-section h2::before{margin-bottom:9px;}
@@ -461,8 +461,11 @@ body{font-size:14.5px;line-height:1.6;letter-spacing:0;font-weight:440;backgroun
   .hero-photo{width:165px;max-width:165px;justify-self:start;}
   .hero-expertise{grid-template-columns:1fr 1fr;gap:13px;}
   .hero-actions{margin-top:15px;}
-  .section,.compact-section{padding-top:27px;padding-bottom:27px;}
+  .section,.compact-section{padding-top:24px;padding-bottom:24px;}
   .education-row{padding:11px 5px;}
   .timeline-item{grid-template-columns:1fr;gap:5px;}
   .back-to-top{right:14px;bottom:14px;}
 }
+
+/* Native floating button usability. */
+.back-to-top{appearance:none;-webkit-appearance:none;cursor:pointer;font-family:inherit;line-height:1;padding:0;}
