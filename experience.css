@@ -187,3 +187,14 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-off
   .hero-photo,.hero-photo .portrait img,.project-card,.button,.education-row,.back-to-top,.recognition-grid article,.reference-grid article{transform:none!important;transition:none!important;}
   .motion-ready .reveal{opacity:1!important;transform:none!important;}
 }
+
+/* Stagger hero appearance without inline styles (compatible with strict CSP). */
+@media (prefers-reduced-motion:no-preference) {
+  .motion-ready .hero-copy > .hero-eyebrow.reveal { transition-delay: 0ms; }
+  .motion-ready .hero-copy > h1.reveal { transition-delay: 75ms; }
+  .motion-ready .hero-copy > .role.reveal { transition-delay: 145ms; }
+  .motion-ready .hero-copy > .hero-intro.reveal { transition-delay: 215ms; }
+  .motion-ready .hero-copy > .hero-actions.reveal { transition-delay: 270ms; }
+  .motion-ready .hero-copy > .hero-expertise.reveal { transition-delay: 330ms; }
+  .motion-ready .hero-photo.reveal { transition-delay: 220ms; }
+}
