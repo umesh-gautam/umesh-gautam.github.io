@@ -18,7 +18,7 @@
   const goToTop = () => {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     try {
-      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'instant' : 'smooth' });
+      window.scrollTo({ top: 0, left: 0, behavior: reduce ? 'auto' : 'smooth' });
     } catch {
       window.scrollTo(0, 0);
     }
